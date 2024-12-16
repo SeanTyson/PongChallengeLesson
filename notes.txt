@@ -1,0 +1,5 @@
+packages
+
+packages in python are either included in the standard library or you have to install them (with pip package manager)
+
+While loops will run their body until the condition you gave to the while loop is false.
