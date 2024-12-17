@@ -40,10 +40,13 @@ while running:
         ballPosition.x -= 300 * dt
 
     #TODO: Make this dynamic so it will always be a pixel exactly in the range of the ballposition possible values
-    ballEdge = ballPosition.x + 15 
-    playerTopPixel = playerPosition['y'] + playerHeight / 2
-    playerBottomPixel = playerPosition['y'] - playerHeight / 2
-    if ballEdge < paddleRightEdgeX and ballEdge < playerTopPixel:
+    ballEdgeX = ballPosition.x + 15 
+    ballEdgeY = ballPosition.y + 15 
+    playerTopPixel = playerPosition['y']
+    playerBottomPixel = playerPosition['y'] + playerHeight
+    print(playerTopPixel)
+    print(playerBottomPixel)
+    if ballEdgeX < paddleRightEdgeX and ballEdgeY >= playerTopPixel and ballEdgeY <= playerBottomPixel:
         leftPaddleHit = True
         ballPosition.x += 300 * dt
 
@@ -55,5 +58,6 @@ while running:
     # dt is delta time in seconds since last frame, used for framerate-
     # independent physics.
     dt = clock.tick(60) / 1000
+    #input("")
 
 pygame.quit()
