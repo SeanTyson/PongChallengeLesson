@@ -3,3 +3,5 @@ packages
 packages in python are either included in the standard library or you have to install them (with pip package manager)
 
 While loops will run their body until the condition you gave to the while loop is false.
+
+Python has a technique called casting, which means it can take a data type and turn it into another one.
