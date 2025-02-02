@@ -15,6 +15,7 @@ paddleRightEdgeX = 180
 ballPosition = pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2)
 ballVelocity = pygame.Vector2(-300, 100)  # Initial velocity
 paddlePosition = {'x': 150, 'y': (screen.get_height() / 2) - (paddleHeight / 2)}
+RpaddlePosition = {'x': screen.get_width() -180, 'y': (screen.get_height() / 2) - (paddleHeight / 2)}
 
 while running:
     # poll for events
@@ -30,6 +31,11 @@ while running:
         ballPosition.y = screen.get_height() / 2
         scores[0] += 1
         ballVelocity = pygame.Vector2(-300, 100)  # Reset ball velocity
+    elif ballPosition.x >= screen.get_width():
+        ballPosition.x = screen.get_width() / 2
+        ballPosition.y = screen.get_height() / 2
+        scores[1] += 1
+        ballVelocity = pygame.Vector2(-300, 100)  # Reset ball velocity
 
     text_surface = coolfondant.render(str(scores[0]), False, (0, 0, 0))
     screen.blit(text_surface, (screen.get_width() - 50, 0))
@@ -38,6 +44,8 @@ while running:
     pygame.draw.circle(screen, "red", ballPosition, 15)
     paddle = pygame.Rect(paddlePosition['x'], paddlePosition['y'], paddleWidth, paddleHeight)
     pygame.draw.rect(screen, "red", paddle)
+    Rpaddle = pygame.Rect(RpaddlePosition['x'], RpaddlePosition['y'], paddleWidth, paddleHeight)
+    pygame.draw.rect(screen, "red", Rpaddle)
     
     # Paddle movement
     keys = pygame.key.get_pressed()
@@ -45,6 +53,12 @@ while running:
         paddlePosition['y'] -= 300 * dt
     if keys[pygame.K_s]:
         paddlePosition['y'] += 300 * dt
+
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_UP]:
+        RpaddlePosition['y'] -= 300 * dt
+    if keys[pygame.K_DOWN]:
+        RpaddlePosition['y'] += 300 * dt
     
     # Ball movement
     ballPosition += ballVelocity * dt
@@ -55,6 +69,12 @@ while running:
     paddleTopPixel = paddlePosition['y']
     paddleBottomPixel = paddlePosition['y'] + paddleHeight
     
+    if ballEdgeY >= screen.get_height() or ballEdgeY <=0:
+        if ballVelocity.y >0:
+            ballVelocity.y = -ballVelocity.y
+        else:
+            ballVelocity.y *=-1
+        
     if ballEdgeX < paddleRightEdgeX and paddleTopPixel <= ballEdgeY <= paddleBottomPixel:
         # Calculate bounce angle
         # distance from center=ball’s y position−paddle’s center y position
