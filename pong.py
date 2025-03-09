@@ -74,8 +74,6 @@ while running:
         paddlePosition['y'] -= 300 * dt
     if keys[pygame.K_s]:
         paddlePosition['y'] += 300 * dt
-
-    keys = pygame.key.get_pressed()
     if keys[pygame.K_UP]:
         rPaddlePosition['y'] -= 300 * dt
     if keys[pygame.K_DOWN]:
