@@ -104,7 +104,6 @@ while running:
     elif (rBallEdgeX > rPaddleLeftEdgeX and ballEdgeX < rPaddleLeftEdgeX + 30) and rPaddleTopPixel <= ballEdgeY <= rPaddleBottomPixel:
         handle_paddle_collision(rPaddlePosition, False)
     
-    # flip() the display - pygame weirdness?
     pygame.display.flip()
     dt = clock.tick(60) / 1000
 
