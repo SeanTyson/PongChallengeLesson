@@ -60,7 +60,6 @@ while running:
 
     text_surface = coolfondant.render(str(scores[0]), False, (0, 0, 0))
     screen.blit(text_surface, (screen.get_width() - 50, 0))
-    text_surface = coolfondant.render(str(scores[1]), False, (0, 0, 0))
     screen.blit(text_surface, (30, 0))
     pygame.draw.circle(screen, "red", ballPosition, 15)
     paddle = pygame.Rect(paddlePosition['x'], paddlePosition['y'], paddleWidth, paddleHeight)
