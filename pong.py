@@ -17,11 +17,12 @@ ballPosition = pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2)
 ballVelocity = pygame.Vector2(-300, 100)  # Initial velocity
 paddlePosition = {'x': 150, 'y': (screen.get_height() / 2) - (paddleHeight / 2)}
 rPaddlePosition = {'x': rPaddleLeftEdgeX, 'y': (screen.get_height() / 2) - (paddleHeight / 2)}
+pygame.mixer.music.load("assets/audio/thats_a_paddlin.mp3")  
 
 def handle_paddle_collision(paddle, is_left_paddle):
     global ballVelocity 
 
-     # Calculate bounce angle
+    # Calculate bounce angle
     # distance from center=ball’s y position−paddle’s center y position
     relative_intersect = (ballPosition.y - (paddle['y'] + paddleHeight / 2)) / (paddleHeight / 2)
     max_bounce_angle = math.radians(45)  # Max bounce angle
@@ -32,7 +33,7 @@ def handle_paddle_collision(paddle, is_left_paddle):
     ballVelocity.x = ballSpeed * math.cos(new_angle)
     ballVelocity.y = ballSpeed * math.sin(new_angle)
 
-    # Ensure the ball moves in the correct direction after hitting the paddle
+    # Ensure the ball moves in the correct direction after hitting the right paddle
     if  not is_left_paddle: 
         ballVelocity.x *= -1
 
@@ -48,11 +49,13 @@ while running:
         ballPosition.x = screen.get_width() / 2
         ballPosition.y = screen.get_height() / 2
         scores[0] += 1
+        pygame.mixer.music.play()
         ballVelocity = pygame.Vector2(-300, 100)  # Reset ball velocity
     elif ballPosition.x >= screen.get_width():
         ballPosition.x = screen.get_width() / 2
         ballPosition.y = screen.get_height() / 2
         scores[1] += 1
+        pygame.mixer.music.play()
         ballVelocity = pygame.Vector2(-300, 100) 
 
     text_surface = coolfondant.render(str(scores[0]), False, (0, 0, 0))
@@ -103,7 +106,7 @@ while running:
     elif (rBallEdgeX > rPaddleLeftEdgeX and ballEdgeX < rPaddleLeftEdgeX + 30) and rPaddleTopPixel <= ballEdgeY <= rPaddleBottomPixel:
         handle_paddle_collision(rPaddlePosition, False)
     
-    # flip() the display
+    # flip() the display - pygame weirdness?
     pygame.display.flip()
     dt = clock.tick(60) / 1000
 
