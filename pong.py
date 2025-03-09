@@ -12,10 +12,11 @@ scores = [0, 0]
 paddleHeight = 120
 paddleWidth = 30
 paddleRightEdgeX = 180
+rPaddleLeftEdgeX = screen.get_width() -180
 ballPosition = pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2)
 ballVelocity = pygame.Vector2(-300, 100)  # Initial velocity
 paddlePosition = {'x': 150, 'y': (screen.get_height() / 2) - (paddleHeight / 2)}
-RpaddlePosition = {'x': screen.get_width() -180, 'y': (screen.get_height() / 2) - (paddleHeight / 2)}
+rPaddlePosition = {'x': rPaddleLeftEdgeX, 'y': (screen.get_height() / 2) - (paddleHeight / 2)}
 
 while running:
     # poll for events
@@ -44,7 +45,7 @@ while running:
     pygame.draw.circle(screen, "red", ballPosition, 15)
     paddle = pygame.Rect(paddlePosition['x'], paddlePosition['y'], paddleWidth, paddleHeight)
     pygame.draw.rect(screen, "red", paddle)
-    Rpaddle = pygame.Rect(RpaddlePosition['x'], RpaddlePosition['y'], paddleWidth, paddleHeight)
+    Rpaddle = pygame.Rect(rPaddlePosition['x'], rPaddlePosition['y'], paddleWidth, paddleHeight)
     pygame.draw.rect(screen, "red", Rpaddle)
     
     # Paddle movement
@@ -56,18 +57,21 @@ while running:
 
     keys = pygame.key.get_pressed()
     if keys[pygame.K_UP]:
-        RpaddlePosition['y'] -= 300 * dt
+        rPaddlePosition['y'] -= 300 * dt
     if keys[pygame.K_DOWN]:
-        RpaddlePosition['y'] += 300 * dt
+        rPaddlePosition['y'] += 300 * dt
     
     # Ball movement
     ballPosition += ballVelocity * dt
 
     # Collision detection
     ballEdgeX = ballPosition.x - 15  # Left edge of the ball
+    rBallEdgeX = ballPosition.x # Right edge of the ball
     ballEdgeY = ballPosition.y
     paddleTopPixel = paddlePosition['y']
     paddleBottomPixel = paddlePosition['y'] + paddleHeight
+    rPaddleTopPixel = rPaddlePosition['y']
+    rPaddleBottomPixel = rPaddlePosition['y'] + paddleHeight
     
     if ballEdgeY >= screen.get_height() or ballEdgeY <=0:
         if ballVelocity.y >0:
@@ -75,7 +79,7 @@ while running:
         else:
             ballVelocity.y *=-1
         
-    if ballEdgeX < paddleRightEdgeX and paddleTopPixel <= ballEdgeY <= paddleBottomPixel:
+    if (ballEdgeX < paddleRightEdgeX and rBallEdgeX > paddleRightEdgeX - 30) and paddleTopPixel <= ballEdgeY <= paddleBottomPixel:
         # Calculate bounce angle
         # distance from center=ball’s y position−paddle’s center y position
         relative_intersect = (ballPosition.y - (paddlePosition['y'] + paddleHeight / 2)) / (paddleHeight / 2)
@@ -90,6 +94,21 @@ while running:
         # Ensure the ball moves to the right after hitting the paddle
         if ballVelocity.x < 0:
             ballVelocity.x *= -1
+    
+    elif (rBallEdgeX > rPaddleLeftEdgeX and ballEdgeX < rPaddleLeftEdgeX + 30) and rPaddleTopPixel <= ballEdgeY <= rPaddleBottomPixel:
+        # Calculate bounce angle
+        # distance from center=ball’s y position−paddle’s center y position
+        relative_intersect = (ballPosition.y - (rPaddlePosition['y'] + paddleHeight / 2)) / (paddleHeight / 2)
+        max_bounce_angle = math.radians(45)  # Convert to radians
+        new_angle = relative_intersect * max_bounce_angle #update theta
+        
+        # Update ball velocity
+        ballSpeed = ballVelocity.length()
+        ballVelocity.x = ballSpeed * math.cos(new_angle)
+        ballVelocity.y = ballSpeed * math.sin(new_angle)
+        
+        # Ensure the ball moves to the right after hitting the paddle
+        ballVelocity.x *= -1
     
     # flip() the display
     pygame.display.flip()
