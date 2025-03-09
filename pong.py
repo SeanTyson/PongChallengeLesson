@@ -65,8 +65,8 @@ while running:
     pygame.draw.circle(screen, "red", ballPosition, 15)
     paddle = pygame.Rect(paddlePosition['x'], paddlePosition['y'], paddleWidth, paddleHeight)
     pygame.draw.rect(screen, "red", paddle)
-    Rpaddle = pygame.Rect(rPaddlePosition['x'], rPaddlePosition['y'], paddleWidth, paddleHeight)
-    pygame.draw.rect(screen, "red", Rpaddle)
+    rPaddle = pygame.Rect(rPaddlePosition['x'], rPaddlePosition['y'], paddleWidth, paddleHeight)
+    pygame.draw.rect(screen, "red", rPaddle)
     
     # Paddle movement
     keys = pygame.key.get_pressed()
