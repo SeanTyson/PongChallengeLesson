@@ -78,7 +78,7 @@ while running:
             ballVelocity.y = -ballVelocity.y
         else:
             ballVelocity.y *=-1
-        
+    #TODO: This should technically be a function so we can do both left and right. 
     if (ballEdgeX < paddleRightEdgeX and rBallEdgeX > paddleRightEdgeX - 30) and paddleTopPixel <= ballEdgeY <= paddleBottomPixel:
         # Calculate bounce angle
         # distance from center=ball’s y position−paddle’s center y position
@@ -90,11 +90,8 @@ while running:
         ballSpeed = ballVelocity.length()
         ballVelocity.x = ballSpeed * math.cos(new_angle)
         ballVelocity.y = ballSpeed * math.sin(new_angle)
-        
-        # Ensure the ball moves to the right after hitting the paddle
-        if ballVelocity.x < 0:
-            ballVelocity.x *= -1
     
+    #TODO: aforementioned function
     elif (rBallEdgeX > rPaddleLeftEdgeX and ballEdgeX < rPaddleLeftEdgeX + 30) and rPaddleTopPixel <= ballEdgeY <= rPaddleBottomPixel:
         # Calculate bounce angle
         # distance from center=ball’s y position−paddle’s center y position
@@ -107,7 +104,7 @@ while running:
         ballVelocity.x = ballSpeed * math.cos(new_angle)
         ballVelocity.y = ballSpeed * math.sin(new_angle)
         
-        # Ensure the ball moves to the right after hitting the paddle
+        # Ensure the ball moves to the left after hitting the paddle
         ballVelocity.x *= -1
     
     # flip() the display
