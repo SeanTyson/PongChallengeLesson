@@ -5,11 +5,11 @@ import threading
 import json
 import traceback
 
-HOST = "35.179.138.206"
+HOST = "127.0.0.1"
 PORT = 5050
 
 def receive_updates(client_socket):
-    global paddle_positions, player_id
+    global paddle_positions, player_id, ballPosition
 
     while True:
         try:
@@ -23,6 +23,9 @@ def receive_updates(client_socket):
             message_data = client_socket.recv(message_length).decode('utf-8')
 
             game_state = json.loads(message_data)
+            ballPosition.x = game_state["ballPosition"][0]
+            ballPosition.y = game_state["ballPosition"][1]
+
 
             if player_id == 2:        
                 paddle_positions[0]['y'] = game_state['paddles'][0]
@@ -59,11 +62,30 @@ print(f"Assigned Player ID: {player_id}")
 receive_thread = threading.Thread(target=receive_updates, args=(client_socket,))
 receive_thread.start()
 
+
+ballPosition = pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2)  
+ballVelocity = pygame.Vector2(-300, 100)
+
+#pygame.mixer.music.load("assets/audio/thats_a_paddlin.mp3")  
+
 while running:
     # poll for events
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+
+    if ballPosition.x <= 0:
+        ballPosition.x = screen.get_width() / 2
+        ballPosition.y = screen.get_height() / 2
+        scores[0] += 1
+        #pygame.mixer.music.play()
+        ballVelocity = pygame.Vector2(-300, 100)  # Reset ball velocity
+    elif ballPosition.x >= screen.get_width():
+        ballPosition.x = screen.get_width() / 2
+        ballPosition.y = screen.get_height() / 2
+        scores[1] += 1
+        #pygame.mixer.music.play()
+        ballVelocity = pygame.Vector2(-300, 100) 
 
     screen.fill("purple")
 
@@ -71,6 +93,7 @@ while running:
     screen.blit(text_surface, (screen.get_width() - 50, 0))
     text_surface = coolfondant.render(str(scores[1]), False, (0, 0, 0))
     screen.blit(text_surface, (30, 0))
+    pygame.draw.circle(screen, "red", ballPosition, 15)
     paddle = pygame.Rect(paddlePosition['x'], paddlePosition['y'], paddleWidth, paddleHeight)
     pygame.draw.rect(screen, "red", paddle)
     rPaddle = pygame.Rect(rPaddlePosition['x'], rPaddlePosition['y'], paddleWidth, paddleHeight)

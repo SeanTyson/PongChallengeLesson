@@ -1,13 +1,19 @@
 import socket
 import threading
 import json
+import pygame
 
 HOST = "0.0.0.0"
 PORT = 5050
 
 clients = []
-game_state = {"paddles": [360, 360]}  # paddle Y positions
 shutdown_flag = False  # Global flag to signal shutdown
+
+clock = pygame.time.Clock()
+dt = 0
+ballPosition = [640.0, 360.0]  # Store as a list instead of pygame.Vector2
+ballVelocity = [-300.0, 100.0]  # Store as a list instead of pygame.Vector2
+game_state = {"ballPosition": ballPosition, "paddles": [360, 360]}
 
 def broadcast_game_state():
     state_json = json.dumps(game_state)
@@ -38,6 +44,13 @@ def handle_client(client_socket, player_id):
         clients.remove(client_socket)
         client_socket.close()
 
+def handle_ball_movement():
+    global ballPosition, dt, ballVelocity
+    while True:
+        ballPosition[0] += ballVelocity[0] * dt
+        ballPosition[1] += ballVelocity[1] * dt
+        dt = clock.tick(60) / 1000
+
 def start_server():
     global shutdown_flag
     try:
@@ -54,8 +67,8 @@ def start_server():
                 player_id = len(clients)
                 client_socket.sendall(str(player_id).encode('utf-8'))
                 print(f"New connection, assigned Player {player_id}")
-
                 threading.Thread(target=handle_client, args=(client_socket, player_id), daemon=True).start()
+                threading.Thread(target=handle_ball_movement, daemon=True).start()
             except socket.timeout:
                 continue
     except KeyboardInterrupt:
