@@ -91,9 +91,9 @@ while running:
     rPaddleTopPixel = rPaddlePosition['y']
     rPaddleBottomPixel = rPaddlePosition['y'] + paddleHeight
     
-    if ballEdgeY >= screen.get_height() or ballEdgeY <=0:
-        if ballVelocity.y >0:
-            ballVelocity.y = -ballVelocity.y
+    if ballEdgeY + 15 >= screen.get_height() or ballEdgeY - 15 <=0:
+        if ballVelocity.y>0:
+            ballVelocity.y= -ballVelocity.y
         else:
             ballVelocity.y *=-1
 
